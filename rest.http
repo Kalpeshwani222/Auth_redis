@@ -8,6 +8,12 @@ POST  http://localhost:5000/auth/login
 ###Register route
 POST  http://localhost:5000/auth/register
 
+Content-Type: : application/json
+
+{
+    "email": "abc@gmail.com",
+    "password": "12345"
+}
 
 ###refresh-token route
 POST  http://localhost:5000/auth/refresh-token

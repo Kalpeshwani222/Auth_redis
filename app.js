@@ -7,6 +7,7 @@ const connectDB = require("./helpers/db");
 const authRoute = require("./routes/auth.route");
   
 const app = express();
+app.use(express.json());
 app.use(morgan('dev'));
  
 connectDB();
