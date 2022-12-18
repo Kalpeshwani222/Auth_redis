@@ -3,11 +3,12 @@ const createError = require('http-errors');
 const router = express.Router();
 const User = require("../models/user.model");
 const {authSchema} = require("../helpers/validate_schema");
-
+const {signAccessToken } = require("../helpers/jwt_helper");
 
 router.post('/register',async(req,res,next)=>{
    try {
-    //    const { email, password } = req.body;
+
+        // const { email, password } = req.body;
         // if(!email || !password){
         //     throw createError.BadRequest();
         // }
@@ -20,8 +21,10 @@ router.post('/register',async(req,res,next)=>{
 
         const user = new User(result);
         const saveUser = await user.save();
+        const accessToken = await signAccessToken(saveUser.id)
+        // res.send(saveUser);
+         res.send({accessToken});
 
-        res.send(saveUser);
    } catch (error) {
        if(error.isJoi === true){
            error.status = 422
