@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(morgan('dev'));
  
 connectDB();
-app.get('/',VerifyAccessToken ,async(req,res,next) =>{
+app.get('/', VerifyAccessToken, async(req,res,next) =>{
     res.send("Hello")
 }) 
 
