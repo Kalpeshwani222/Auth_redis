@@ -5,15 +5,17 @@ require('dotenv').config();
 
 const connectDB = require("./helpers/db");
 const authRoute = require("./routes/auth.route");
-  
+const {VerifyAccessToken} = require('./helpers/jwt_helper');
+
+
 const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
  
 connectDB();
-app.get('/',async(req,res,next) =>{
+app.get('/',VerifyAccessToken ,async(req,res,next) =>{
     res.send("Hello")
-})
+}) 
 
 app.use('/auth',authRoute);
 
