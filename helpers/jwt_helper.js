@@ -51,5 +51,33 @@ module.exports = {
             req.payload = payload;
             next();
         })
-    }
+    },
+
+    //refresh token
+    signRefreshToken : (userId) =>{
+        return new Promise((resolve,reject) =>{
+            
+            const payload = {
+            }
+
+            const secret = process.env.REFRESH_TOKEN_SECRET;
+            
+            const options = {
+                expiresIn: "1y",
+                issuer : "kalpeshwani.com",
+                audience : userId, 
+            }
+
+            JWT.sign(payload, secret, options,(err,token)=>{
+                if(err){
+                    console.log(err.message);
+
+                    // reject(err)
+                    reject(createError.InternalServerError());
+                }
+                resolve(token)
+            })
+        })
+    },
+
 }

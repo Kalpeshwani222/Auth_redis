@@ -3,7 +3,7 @@ const createError = require("http-errors");
 const router = express.Router();
 const User = require("../models/user.model");
 const { authSchema } = require("../helpers/validate_schema");
-const { signAccessToken } = require("../helpers/jwt_helper");
+const { signAccessToken, signRefreshToken } = require("../helpers/jwt_helper");
 const { create } = require("../models/user.model");
 
 router.post("/register", async (req, res, next) => {
@@ -22,8 +22,10 @@ router.post("/register", async (req, res, next) => {
     const user = new User(result);
     const saveUser = await user.save();
     const accessToken = await signAccessToken(saveUser.id);
+    const refreshToken = await signRefreshToken(saveUser.id)
+
     // res.send(saveUser);
-    res.send({ accessToken });
+    res.send({ accessToken, refreshToken });
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
@@ -43,8 +45,10 @@ router.post("/login", async (req, res, next) => {
     if(!isMatch) throw createError.Unauthorized('Username/password not valid');
 
     const accessToken = await signAccessToken(user.id);
+    const refreshToken = await signRefreshToken(user.id)
+ 
 
-    res.send({accessToken });
+    res.send({accessToken, refreshToken });
   } catch (error) {
     if (error.isJoi === true) {
       return next(createError.BadRequest("Invalid username/password"))
