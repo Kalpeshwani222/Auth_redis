@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken');
 const createError = require("http-errors");
+const { reject } = require('bcrypt/promises');
 
 module.exports = {
     
@@ -79,5 +80,22 @@ module.exports = {
             })
         })
     },
+
+    //verify refresh token
+    verifyRefreshToken : (refreshToken) => {
+       return new Promise((resolve,reject) =>{
+           
+            JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err,payload) =>{
+                if(err) {
+                    return reject(createError.Unauthorized());
+                }
+
+                const userId = payload.aud;  //audience
+
+                resolve(userId);
+            })
+        
+       }) 
+    }
 
 }
