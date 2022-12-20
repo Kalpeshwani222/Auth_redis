@@ -6,12 +6,19 @@ require('dotenv').config();
 const connectDB = require("./helpers/db");
 const authRoute = require("./routes/auth.route");
 const {VerifyAccessToken} = require('./helpers/jwt_helper');
+const client = require('./helpers/init_redis');
 
+client.SET('foo', 'bar');
+client.GET('foo',(err,value) =>{
+    if(err) console.log(err.message);
+    console.log(value);
+})
 
 const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
- 
+
+
 connectDB();
 app.get('/', VerifyAccessToken, async(req,res,next) =>{
     res.send("Hello")
