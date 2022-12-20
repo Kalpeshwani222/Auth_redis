@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
 const createError = require("http-errors");
-const { reject } = require('bcrypt/promises');
+const client = require('./init_redis');
+
 
 module.exports = {
     
@@ -64,7 +65,7 @@ module.exports = {
             const secret = process.env.REFRESH_TOKEN_SECRET;
             
             const options = {
-                expiresIn: "1y",
+                expiresIn: "30s",
                 issuer : "kalpeshwani.com",
                 audience : userId, 
             }
@@ -76,7 +77,17 @@ module.exports = {
                     // reject(err)
                     reject(createError.InternalServerError());
                 }
-                resolve(token)
+
+                client.SET(userId,token,'EX',30, (err,reply)=>{
+                    if(err){
+                        console.log(err.message);
+                        reject(createError.InternalServerError());
+                        return
+                    }
+
+                    resolve(token)
+                })
+                //  resolve(token)
             })
         })
     },
@@ -92,7 +103,20 @@ module.exports = {
 
                 const userId = payload.aud;  //audience
 
-                resolve(userId);
+                // search in the redis db
+                client.GET(userId, (err,result) =>{
+                    if(err){
+                        console.log(err.message);
+                        reject(createError.InternalServerError());
+                        return
+                    }
+
+                    if(refreshToken === result){
+                        return resolve(userId);
+                    }
+
+                    reject(createError.Unauthorized());
+                })
             })
         
        }) 

@@ -6,13 +6,7 @@ require('dotenv').config();
 const connectDB = require("./helpers/db");
 const authRoute = require("./routes/auth.route");
 const {VerifyAccessToken} = require('./helpers/jwt_helper');
-const client = require('./helpers/init_redis');
-
-client.SET('foo', 'bar');
-client.GET('foo',(err,value) =>{
-    if(err) console.log(err.message);
-    console.log(value);
-})
+require('./helpers/init_redis');
 
 const app = express();
 app.use(express.json());
