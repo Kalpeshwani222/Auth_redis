@@ -65,7 +65,7 @@ module.exports = {
             const secret = process.env.REFRESH_TOKEN_SECRET;
             
             const options = {
-                expiresIn: "30s",
+                expiresIn: "1y",
                 issuer : "kalpeshwani.com",
                 audience : userId, 
             }
@@ -78,7 +78,7 @@ module.exports = {
                     reject(createError.InternalServerError());
                 }
 
-                client.SET(userId,token,'EX',30, (err,reply)=>{
+                client.SET(userId,token,'EX',365*24*60*60, (err,reply)=>{
                     if(err){
                         console.log(err.message);
                         reject(createError.InternalServerError());
